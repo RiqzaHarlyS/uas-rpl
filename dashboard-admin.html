@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container-dashboard">
+        <!-- Navbar -->
+    <nav class="navbar">
+      <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+      <h1 class="navbar-title">DASHBOARD ADMIN</h1>
+      <img src="assets/images/logo.png" alt="Logo" class="navbar-logo">
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <p class="admin-name">Dinaafaj</p>
+        <button class="close-btn" onclick="toggleSidebar()">✖</button>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="dashboard-admin.html">Dashboard</a></li>
+        <li><a href="beranda.html">Beranda</a></li>
+        <li><a href="produk-manajemen.html">Produk Management</a></li>
+        <!-- <li><a href="riwayat-order.html">Riwayat Order</a></li> -->
+        <li><a href="order-masuk.html">Order Masuk</a></li>
+        <li><a href="#"class="logout-btn">Keluar</a></li>
+      </ul>
+    </aside>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content-dashboard">
+      <div class="card-container">
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-details">
+            <h2>10</h2>
+            <p>Order Masuk</p>
+            <span>Today</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🛒</div>
+          <div class="card-details">
+            <h2>100</h2>
+            <p>Riwayat Order</p>
+            <span>Lifetime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Revenue Chart -->
+      <div class="chart-container">
+        <h3>Total Revenue</h3>
+        <canvas id="salesChart"></canvas>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footers">
+    <p>2024 Kepique. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Sidebar Toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+      if (sidebar.style.left === "0px") {
+        sidebar.style.left = "-250px";
+        overlay.style.display = "none";
+      } else {
+        sidebar.style.left = "0px";
+        overlay.style.display = "block";
+      }
+    }
+
+    // Tutup sidebar saat overlay ditekan
+    document.getElementById("sidebar-overlay").addEventListener("click", function () {
+      toggleSidebar();
+    });
+
+    // Chart.js Setup
+    document.addEventListener("DOMContentLoaded", function () {
+      const ctx = document.getElementById("salesChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          datasets: [
+            {
+              label: "Total Sales",
+              data: [200, 400, 600, 800, 1000, 700, 500],
+              backgroundColor: "rgba(75, 192, 192, 0.6)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 1000, // Set maximum value to 1000
+            },
+          },
+        },
+      });
+    });
+    window.onload = function() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        // Ambil data order dari localStorage
+        const ordersMasuk = JSON.parse(localStorage.getItem('ordersMasuk')) || [];
+        const totalOrders = ordersMasuk.length; // Hitung jumlah order masuk
+
+        // Update card-container
+        document.querySelector('.card-container').innerHTML = `
+            <div class="card">
+                <div class="card-icon">📦</div>
+                <div class="card-details">
+                    <h2>${totalOrders}</h2>
+                    <p>Order Masuk</p>
+                    <span>Today</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛒</div>
+                <div class="card-details">
+                    <h2>${getTotalRiwayatOrders()}</h2>
+                    <p>Riwayat Order</p>
+                    <span>Lifetime</span>
+                </div>
+            </div>
+        `;
+    };
+
+    function getTotalRiwayatOrders() {
+        const ordersRiwayat = JSON.parse(localStorage.getItem('ordersRiwayat')) || [];
+        return ordersRiwayat.length; // Menghitung jumlah order riwayat
+    }
+
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+        // Hapus status login
+        localStorage.removeItem('isLoggedIn');
+        // Redirect ke halaman login
+        window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

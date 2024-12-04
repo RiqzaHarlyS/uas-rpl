@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keripique - dinaafaj</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="assets/images/logo.png" alt="Logo" class="logo">
+            <span class="brand-name">Keripique</span>
+        </div>
+        <div class="nav-buttons">
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+                <div class="dropdown-content">
+                    <a href="beranda.html">Beranda</a>
+                    <a href="fitur.html">Fitur</a>
+                    <a href="kontak.html">Kontak</a>
+                </div>
+            </div>
+            <button class="login-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content-produk">
+        <!-- Produk 1 -->
+        <div class="produk-card">
+            <div class="produk-details">
+                <h3>Keripik Kaca Original</h3>
+                <p>250gr</p>
+                <p>Rp.15.000</p>
+            </div>
+            <img src="assets/images/logo.png" alt="Produk">
+            <button class="produk-button">Masukkan Keranjang</button>
+        </div>
+
+        <!-- Produk 2 -->
+        <div class="produk-card">
+            <div class="produk-details">
+                <h3>Keripik Kaca Pedas</h3>
+                <p>250gr</p>
+                <p>Rp.15.000</p>
+            </div>
+            <img src="assets/images/logo.png" alt="Produk">
+            <button class="produk-button">Masukkan Keranjang</button>
+        </div>
+
+        <!-- Produk 3 -->
+        <div class="produk-card">
+            <div class="produk-details">
+                <h3>Basreng Original</h3>
+                <p>250gr</p>
+                <p>Rp.15.000</p>
+            </div>
+            <img src="assets/images/logo.png" alt="Produk">
+            <button class="produk-button">Masukkan Keranjang</button>
+        </div>
+
+        <!-- Produk 4 -->
+        <div class="produk-card">
+            <div class="produk-details">
+                <h3>Basreng Pedas</h3>
+                <p>250gr</p>
+                <p>Rp.15.000</p>
+            </div>
+            <img src="assets/images/logo.png" alt="Produk">
+            <button class="produk-button">Masukkan Keranjang</button>
+        </div>
+    </main>
+
+    <!-- Keranjang Button -->
+    <button class="keranjang-btn">
+        <img src="assets/icons/shopping-cart.png" alt="Keranjang Icon" class="keranjang-icon">
+        Keranjang (0)
+    </button>
+
+    <!-- Popup -->
+    <div class="popup-overlay">
+        <div class="popup">
+            <h3>Keranjang Belanja</h3>
+            <div class="popup-content">
+                <!-- Isi konten popup akan diisi secara dinamis -->
+            </div>
+            <div class="popup-footer">
+                <div class="total-price">Total: Rp 0</div>
+                <button class="checkout-btn">Lanjut Checkout</button>
+            </div>
+            <button class="close-popup">Tutup</button>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Keripique. All rights reserved.</p>
+    </footer>
+    <script>
+        let cartItems = [];
+
+        function updateCartButton() {
+            const keranjangBtn = document.querySelector('.keranjang-btn');
+            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+            keranjangBtn.textContent = `Keranjang (${totalItems})`;
+        }
+
+        function updatePopupContent() {
+            const popupContent = document.querySelector('.popup-content');
+            popupContent.innerHTML = '';
+
+            const uniqueItems = {};
+            cartItems.forEach(item => {
+                if (uniqueItems[item.name]) {
+                    uniqueItems[item.name].quantity += item.quantity;
+                } else {
+                    uniqueItems[item.name] = { ...item };
+                }
+            });
+
+            Object.values(uniqueItems).forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('popup-item');
+
+                itemElement.innerHTML = `
+                    <div class="item-info">
+                        <h4>${item.name}</h4>
+                        <p>Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="item-quantity">
+                        <button class="quantity-btn minus-btn" data-name="${item.name}">-</button>
+                        <span class="quantity">${item.quantity}</span>
+                        <button class="quantity-btn plus-btn" data-name="${item.name}">+</button>
+                    </div>
+                `;
+
+                popupContent.appendChild(itemElement);
+            });
+
+            updateTotalPrice();
+            updateCartButton();
+        }
+
+        function increaseQuantity(name) {
+            const itemIndex = cartItems.findIndex(item => item.name === name);
+            if (itemIndex !== -1) {
+                cartItems[itemIndex].quantity++;
+                updatePopupContent();
+            }
+        }
+
+        function decreaseQuantity(name) {
+            const itemIndex = cartItems.findIndex(item => item.name === name);
+            if (itemIndex !== -1) {
+                if (cartItems[itemIndex].quantity > 1) {
+                    cartItems[itemIndex].quantity--;
+                } else {
+                    cartItems.splice(itemIndex, 1);
+                }
+                updatePopupContent();
+            }
+        }
+
+        function updateTotalPrice() {
+            const totalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+            document.querySelector('.total-price').textContent = `Total: Rp ${totalPrice.toLocaleString('id-ID')}`;
+        }
+
+        const produkButtons = document.querySelectorAll('.produk-button');
+        produkButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const name = button.parentNode.querySelector('h3').textContent;
+                const price = parseInt(button.parentNode.querySelector('p:nth-of-type(2)').textContent.replace('Rp.', '').replace(/\./g, ''));
+
+                // Ambil data produk dari localStorage
+                const products = JSON.parse(localStorage.getItem('products'));
+                const product = products.find(p => p.name === name);
+
+                // Periksa stok
+                if (product && product.stock > 0) {
+                    const existingItemIndex = cartItems.findIndex(item => item.name === name);
+                    if (existingItemIndex !== -1) {
+                        cartItems[existingItemIndex].quantity++;
+                    } else {
+                        cartItems.push({ name, price, quantity: 1 });
+                    }
+
+                    // Kurangi stok produk
+                    product.stock--;
+                    localStorage.setItem('products', JSON.stringify(products)); // Simpan kembali ke localStorage
+
+                    updateCartButton();
+                } else {
+                    alert('Produk habis!'); // Beri tahu pengguna bahwa produk habis
+                }
+            });
+        });
+
+        document.querySelector('.keranjang-btn').addEventListener('click', showPopup);
+        document.querySelector('.close-popup').addEventListener('click', hidePopup);
+        document.querySelector('.checkout-btn').addEventListener('click', () => {
+            // Save cart items to localStorage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+            hidePopup();
+        });
+
+        document.querySelector('.popup-content').addEventListener('click', (event) => {
+            if (event.target.classList.contains('plus-btn')) {
+                increaseQuantity(event.target.dataset.name);
+            } else if (event.target.classList.contains('minus-btn')) {
+                decreaseQuantity(event.target.dataset.name);
+            }
+        });
+
+        function showPopup() {
+            updatePopupContent();
+            document.querySelector('.popup-overlay').style.display = 'flex';
+        }
+
+        function hidePopup() {
+            document.querySelector('.popup-overlay').style.display = 'none';
+        }
+
+        // JavaScript for login button and dropdown
+        document.querySelector('.dropdown-btn').addEventListener('click', function(event) {
+            event.stopPropagation();
+            document.querySelector('.dropdown-content').classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                for (let dropdown of dropdowns) {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
+
+        // Login button click handler
+        document.querySelector('.login-btn').addEventListener('click', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                // Jika sudah login, arahkan ke dashboard
+                window.location.href = 'dashboard-admin.html';
+            } else {
+                // Jika belum login, arahkan ke halaman login
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar-login">
+        <a href="beranda.html"><button>Kembali</button></a>
+        <h1 class="navbar-title-login">LOGIN PAGE</h1>
+        <img src="assets/images/logo.png" alt="Logo" class="navbar-logo">
+      </nav>
+    <div class="login-page">
+        <!-- Login Container -->
+        <div class="login-container">
+            <h2>Login</h2>
+            <form id="loginForm" action="dashboard.html" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+            <div class="error-message" id="error-message"></div>
+            </form>
+        </div>
+    </div>
+    <footer class="footers">
+        <p>2024 Kepique. All rights reserved.</p>
+    </footer>
+  <script>
+    // Handle form validation
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form submission
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("error-message");
+
+      // Example of username and password validation
+      if (username === "admin" && password === "admin123") {
+         // Jika login berhasil, simpan status login
+        localStorage.setItem('isLoggedIn', 'true');
+        // If login is successful, redirect to dashboard
+        window.location.href = "dashboard-admin.html";
+      } else {
+        // If invalid login, show error message
+        errorMessage.textContent = "Invalid username or password. Please try again.";
+      }
+    });
+  </script>
+
+</body>
+</html>

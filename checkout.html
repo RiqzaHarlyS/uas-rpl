@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Keripique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .order-summary {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .order-summary h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .total {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #ddd;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #00c853;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #ff3d00;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .checkout-btn:hover {
+            background: #00a844;
+        }
+
+        .cancel-btn:hover {
+            background: #dd3400;
+        }
+
+        .error {
+            border-color: #ff3d00;
+        }
+
+        .error-message {
+            color: #ff3d00;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+        <form id="checkoutForm" onsubmit="return false;">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" required>
+                <div class="error-message" id="nama-error">Nama lengkap harus diisi</div>
+            </div>
+            <div class="form-group">
+                <label for="hp">Nomor HP:</label>
+                <input type="tel" id="hp" required>
+                <div class="error-message" id="hp-error">Nomor HP harus diisi</div>
+            </div>
+            <div class="form-group">
+                <label for="alamat">Alamat Pengiriman:</label>
+                <textarea id="alamat" required></textarea>
+                <div class="error-message" id="alamat-error">Alamat pengiriman harus diisi</div>
+            </div>
+
+            <div class="order-summary">
+                <h2>Ringkasan Pesanan</h2>
+                <div id="orderItems">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <button type="button" class="checkout-btn" onclick="checkoutViaWhatsapp()">Checkout Via Whatsapp</button>
+            <button type="button" class="cancel-btn" onclick="window.location.href = 'pesan.html'">Batalkan</button>
+        </form>
+    </div>
+
+    <script>
+        // Get cart items from localStorage
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        
+        // Format currency to IDR
+        function formatToRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(number);
+        }
+
+        function displayOrderSummary() {
+            const orderItemsDiv = document.getElementById('orderItems');
+            let totalPrice = 0;
+
+            // Clear existing content
+            orderItemsDiv.innerHTML = '';
+
+            // Add each item
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'order-item';
+                itemDiv.innerHTML = `
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>${formatToRupiah(itemTotal)}</span>
+                `;
+                orderItemsDiv.appendChild(itemDiv);
+            });
+
+            // Add total
+            const totalDiv = document.createElement('div');
+            totalDiv.className = 'order-item total';
+            totalDiv.innerHTML = `
+                <span>Total</span>
+                <span>${formatToRupiah(totalPrice)}</span>
+            `;
+            orderItemsDiv.appendChild(totalDiv);
+        }
+
+        function validateForm() {
+            const nama = document.getElementById('nama');
+            const hp = document.getElementById('hp');
+            const alamat = document.getElementById('alamat');
+            let isValid = true;
+
+            // Reset previous errors
+            [nama, hp, alamat].forEach(field => {
+                field.classList.remove('error');
+                document.getElementById(`${field.id}-error`).style.display = 'none';
+            });
+
+            // Validate each field
+            if (!nama.value.trim()) {
+                nama.classList.add('error');
+                document.getElementById('nama-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!hp.value.trim()) {
+                hp.classList.add('error');
+                document.getElementById('hp-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!alamat.value.trim()) {
+                alamat.classList.add('error');
+                document.getElementById('alamat-error').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function checkoutViaWhatsapp() {
+            if (!validateForm()) {
+                return;
+            }
+
+            const nama = document.getElementById('nama').value;
+            const hp = document.getElementById('hp').value;
+            const alamat = document.getElementById('alamat').value;
+            const currentDate = new Date().toLocaleString('id-ID');
+
+            // Ambil cart items
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+            // Simpan data checkout ke localStorage untuk order masuk
+            const orderData = {
+                name: nama,
+                phone: hp,
+                address: alamat,
+                items: cartItems,
+                date: currentDate
+            };
+
+            // Simpan ke localStorage
+            let ordersMasuk = JSON.parse(localStorage.getItem('ordersMasuk')) || [];
+            ordersMasuk.push(orderData);
+            localStorage.setItem('ordersMasuk', JSON.stringify(ordersMasuk));
+
+            // Simpan juga ke riwayat order
+            let ordersRiwayat = JSON.parse(localStorage.getItem('ordersRiwayat')) || [];
+            ordersRiwayat.push(orderData);
+            localStorage.setItem('ordersRiwayat', JSON.stringify(ordersRiwayat));
+
+            // Buat pesan WhatsApp
+            let message = `🛍️ *PESANAN BARU*\n\n`;
+            message += `📅 Tanggal: ${currentDate}\n\n`;
+            message += `👤 *Detail Pembeli:*\n`;
+            message += `Nama: ${nama}\n`;
+            message += `No HP: ${hp}\n`;
+            message += `📍 Alamat: ${alamat}\n\n`;
+            message += `🛒 *Detail Pesanan:*\n`;
+
+            let totalPrice = 0;
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+                message += `▪️ ${item.name} (${item.quantity}x) : ${formatToRupiah(itemTotal)}\n`;
+            });
+
+            message += `\n💰 *Total Pembayaran: ${formatToRupiah(totalPrice)}*\n\n`;
+            message += `Terima kasih telah berbelanja! 🙏`;
+
+            // Encode the message for WhatsApp URL
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappNumber = '6289526856721'; // Ganti dengan nomor WhatsApp Anda
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+            // Clear cart and redirect to WhatsApp
+            localStorage.removeItem('cartItems');
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize order summary on page load
+        displayOrderSummary();
+    </script>
+</body>
+</html>

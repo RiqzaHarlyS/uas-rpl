@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Masuk</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar Styles */
+        /* Navbar */
+        .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .hamburger-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        }
+        .navbar-title {
+        font-size: 16px;
+        font-weight: bold;
+        }
+        .navbar-logo {
+        width: 30px;
+        height: 30px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 1000; /* Pastikan berada di atas konten */
+}
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 999; /* Di bawah sidebar tapi di atas konten */
+}
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f1f1f1;
+}
+.admin-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.sidebar-menu {
+  list-style: none;
+  padding: 15px;
+}
+.sidebar-menu li {
+  padding: 10px 0;
+  cursor: pointer;
+  text-align: left;
+}
+.sidebar-menu li:hover {
+  background-color: #f8f9fa;
+}
+
+.sidebar-menu a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+}
+
+        /* Main Content */
+        .main-content {
+            margin-top: 10px;
+            padding: 15px;
+            transition: margin-left 0.3s;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .table-container h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* Ensures table doesn't get too squeezed */
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: white;
+            color: black;
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Specific Styles */
+        @media screen and (max-width: 768px) {
+            .main-content {
+                padding: 10px;
+            }
+
+            .table-container {
+                padding: 10px;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .table-container h2 {
+                font-size: 1.1rem;
+            }
+
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+
+            /* Custom scrollbar for mobile */
+            .table-container::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            .table-container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+
+            .table-container::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+        <h1 style="font-size: 18px; font-weight: bold;">ORDER MASUK</h1>
+        <img src="assets/images/logo.png" alt="Logo" class="navbar-logo">
+    </nav>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <p class="admin-name">Dinaafaj</p>
+          <button class="close-btn" onclick="toggleSidebar()">✖</button>
+        </div>
+            <ul class="sidebar-menu">
+              <li><a href="dashboard-admin.html">Dashboard</a></li>
+              <li><a href="beranda.html">Beranda</a></li>
+              <li><a href="produk-manajemen.html">Produk Management</a></li>
+              <!-- <li><a href="riwayat-order.html">Riwayat Order</a></li> -->
+              <li><a href="order-masuk.html">Order Masuk</a></li>
+              <li><a href="#"class="logout-btn">Keluar</a></li>
+            </ul>
+    </aside>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="table-container">
+            <h2>Order Masuk Hari Ini</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama Pembeli</th>
+                        <th>Produk</th>
+                        <th>Jumlah</th>
+                        <th>Harga</th>
+                        <th>Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Kepique. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const orders = JSON.parse(localStorage.getItem('ordersMasuk')) || [];
+        orders.forEach((order, index) => {
+            order.items.forEach(item => {
+                const row = document.createElement('tr');
+                const totalPrice = item.price * item.quantity;
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${order.name}</td>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>Rp ${totalPrice.toLocaleString()}</td>
+                    <td>${order.date}</td>
+                `;
+                orderTableBody.appendChild(row);
+            });
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            if (sidebar.style.left === "0px") {
+                sidebar.style.left = "-250px";
+                overlay.style.display = "none";
+            } else {
+                sidebar.style.left = "0px";
+                overlay.style.display = "block";
+            }
+        }
+    
+        // Tutup sidebar saat overlay ditekan
+        document.getElementById("sidebar-overlay").addEventListener("click", function () {
+            toggleSidebar();
+        });
+
+        // Logout button functionality
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+        // Hapus status login
+        localStorage.removeItem('isLoggedIn');
+        // Redirect ke halaman login
+        window.location.href = "login.html";
+        });
+    </script>
+</body>
+</html>

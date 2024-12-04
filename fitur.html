@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keripique - dinaafaj</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="assets/images/logo.png" alt="Logo" class="logo">
+            <span class="brand-name">Keripique</span>
+        </div>
+        <div class="nav-buttons">
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+                <div class="dropdown-content">
+                    <a href="beranda.html">Beranda</a>
+                    <a href="fitur.html">Fitur</a>
+                    <a href="kontak.html">Kontak</a>
+                </div>
+            </div>
+            <button class="login-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content-fitur">
+        <div class="textbox-fitur">
+            <h1 class="title-fitur">Bahan Berkualitas</h1>
+            <p class="paragraph-fitur">Dipilih dari bahan-bahan terbaik untuk menghasilkan keripik yang renyah dan lezat.</p>
+        </div>
+        <div class="textbox-fitur">
+            <h1 class="title-fitur">Proses Higienis</h1>
+            <p class="paragraph-fitur">Diproduksi dengan standar kebersihan tinggi untuk menjamin kualitas produk.</p>
+        </div>
+        <div class="textbox-fitur">
+            <h1 class="title-fitur">Varian Rasa</h1>
+            <p class="paragraph-fitur">Tersedia dalam berbagai pilihan rasa untuk memenuhi selera Anda.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Keripique. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Dropdown functionality
+        document.querySelector('.dropdown-btn').addEventListener('click', function(event) {
+            event.stopPropagation();
+            document.querySelector('.dropdown-content').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn')) {
+                const dropdowns = document.getElementsByClassName('dropdown-content');
+                for (let dropdown of dropdowns) {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
+
+        // Login button click handler
+        document.querySelector('.login-btn').addEventListener('click', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                // Jika sudah login, arahkan ke dashboard
+                window.location.href = 'dashboard-admin.html';
+            } else {
+                // Jika belum login, arahkan ke halaman login
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

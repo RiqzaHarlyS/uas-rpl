@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            padding: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+
+        /* Navbar Styles */
+        /* Navbar */
+        .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .hamburger-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        }
+        .navbar-title {
+        font-size: 16px;
+        font-weight: bold;
+        }
+        .navbar-logo {
+        width: 30px;
+        height: 30px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 1000; /* Pastikan berada di atas konten */
+}
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 999; /* Di bawah sidebar tapi di atas konten */
+}
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f1f1f1;
+}
+.admin-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.sidebar-menu {
+  list-style: none;
+  padding: 15px;
+}
+.sidebar-menu li {
+  padding: 10px 0;
+  cursor: pointer;
+  text-align: left;
+}
+.sidebar-menu li:hover {
+  background-color: #f8f9fa;
+}
+
+.sidebar-menu a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+}
+
+        /* Product Card Styles */
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: row-reverse; /* Change direction */
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-details {
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .product-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .quantity-action-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            padding: 5px 10px;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .quantity-display {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+        }
+
+        .edit-icon {
+            color: #ffd43b;
+        }
+
+        .delete-icon {
+            color: #ff6b6b;
+        }
+
+        .out-of-stock {
+            color: red;
+            font-weight: bold;
+        }
+
+        .footers {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            font-weight: bold;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+        <h1 style="font-size: 18px; font-weight: bold;">PRODUK MANAJEMEN</h1>
+        <img src="assets/images/logo.png" alt="Logo" class="navbar-logo">
+    </nav>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <p class="admin-name">Dinaafaj</p>
+          <button class="close-btn" onclick="toggleSidebar()">✖</button>
+        </div>
+            <ul class="sidebar-menu">
+              <li><a href="dashboard-admin.html">Dashboard</a></li>
+              <li><a href="beranda.html">Beranda</a></li>
+              <li><a href="produk-manajemen.html">Produk Management</a></li>
+              <!-- <li><a href="riwayat-order.html">Riwayat Order</a></li> -->
+              <li><a href="order-masuk.html">Order Masuk</a></li>
+              <li><a href="#"class="logout-btn">Keluar</a></li>
+            </ul>
+    </aside>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <div class="container" id="productContainer">
+        <!-- Products will be dynamically inserted here -->
+    </div>
+
+    <footer class="footers">
+        <p>2024 Kepique. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Initial product data
+        const initialProducts = [
+            {
+                id: 1,
+                name: "Keripik Kaca Original",
+                weight: "250gr",
+                price: 15000,
+                stock: 50,
+                image: "assets/images/logo.png"
+            },
+            {
+                id: 2,
+                name: "Keripik Kaca Pedas",
+                weight: "250gr",
+                price: 15000,
+                stock: 50,
+                image: "/api/placeholder/80/80"
+            },
+            {
+                id: 3,
+                name: "Basreng Original",
+                weight: "250gr",
+                price: 15000,
+                stock: 50,
+                image: "/api/placeholder/80/80"
+            },
+            {
+                id: 4,
+                name: "Basreng Pedas",
+                weight: "250gr",
+                price: 15000,
+                stock: 50,
+                image: "/api/placeholder/80/80"
+            }
+        ];
+
+        // Initialize localStorage if empty
+        if (!localStorage.getItem('products')) {
+            localStorage.setItem('products', JSON.stringify(initialProducts));
+        }
+
+        // Function to update product display
+        function updateProductDisplay() {
+            const products = JSON.parse(localStorage.getItem('products'));
+            const container = document.getElementById('productContainer');
+            container.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-details">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-info">
+                            Berat: ${product.weight} | Harga: Rp ${product.price.toLocaleString()}
+                        </div>
+                        <div class="quantity-action-container">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateStock(${product.id}, -1)">-</button>
+                                <span class="quantity-display ${product.stock === 0 ? 'out-of-stock' : ''}">${product.stock}</span>
+                                <button class="quantity-btn" onclick="updateStock(${product.id}, 1)">+</button>
+                            </div>
+                            <div class="action-icons">
+                                <button class="action-icon edit-icon"><i class="fas fa-edit"></i></button>
+                                <button class="action-icon delete-icon"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+        // Function to update stock
+        function updateStock(productId, change) {
+            const products = JSON.parse(localStorage.getItem('products'));
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                const newStock = Math.max(0, product.stock + change);
+                product.stock = newStock;
+                localStorage.setItem('products', JSON.stringify(products));
+                updateProductDisplay();
+            }
+        }
+
+        // Initial display
+        updateProductDisplay();
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            if (sidebar.style.left === "0px") {
+                sidebar.style.left = "-250px";
+                overlay.style.display = "none";
+            } else {
+                sidebar.style.left = "0px";
+                overlay.style.display = "block";
+            }
+        }
+
+        // Tutup sidebar saat overlay ditekan
+        document.getElementById("sidebar-overlay").addEventListener("click", function () {
+            toggleSidebar();
+        });
+
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                // Jika tidak login, redirect ke halaman login
+                window.location.href = "login.html";
+            }
+        };
+
+        // Logout button functionality
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            // Hapus status login
+            localStorage.removeItem('isLoggedIn');
+            // Redirect ke halaman login
+            window.location.href = "login.html";
+        });
+
+        
+        function disableButtonIfOutOfStock() {
+            const products = getProductStock();
+            const produkButtons = document.querySelectorAll('.produk-button');
+
+            produkButtons.forEach(button => {
+                const name = button.parentNode.querySelector('h3').textContent;
+                const product = products.find(p => p.name === name);
+
+                if (product && product.stock === 0) {
+                    button.disabled = true;
+                    button.textContent = 'Habis';
+                }
+            });
+        }
+
+        // Panggil fungsi setelah memuat halaman
+        disableButtonIfOutOfStock();
+    </script>
+</body>
+</html>
