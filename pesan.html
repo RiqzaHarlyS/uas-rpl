@@ -111,6 +111,16 @@
     <script>
         let cartItems = [];
 
+        if (!localStorage.getItem('products')) {
+            const initialProducts = [
+                { name: 'Keripik Kaca Original', stock: 50 },
+                { name: 'Keripik Kaca Pedas', stock: 50 },
+                { name: 'Basreng Original', stock: 50 },
+                { name: 'Basreng Pedas', stock: 50 }
+            ];
+            localStorage.setItem('products', JSON.stringify(initialProducts));
+        }
+
         function updateCartButton() {
             const keranjangBtn = document.querySelector('.keranjang-btn');
             const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -181,15 +191,22 @@
         const produkButtons = document.querySelectorAll('.produk-button');
         produkButtons.forEach((button) => {
             button.addEventListener('click', () => {
+                console.log('Tombol diklik');
+
                 const name = button.parentNode.querySelector('h3').textContent;
-                const price = parseInt(button.parentNode.querySelector('p:nth-of-type(2)').textContent.replace('Rp.', '').replace(/\./g, ''));
+                const priceText = button.parentNode.querySelector('p:nth-of-type(2)').textContent;
+                const price = parseInt(priceText.replace('Rp.', '').replace(/\./g, ''));
 
-                // Ambil data produk dari localStorage
+                console.log('Nama:', name);
+                console.log('Harga:', price);
+
                 const products = JSON.parse(localStorage.getItem('products'));
-                const product = products.find(p => p.name === name);
+                console.log('Produk dari localStorage:', products);
 
-                // Periksa stok
+                const product = products.find(p => p.name === name);
                 if (product && product.stock > 0) {
+                    console.log('Produk tersedia:', product);
+
                     const existingItemIndex = cartItems.findIndex(item => item.name === name);
                     if (existingItemIndex !== -1) {
                         cartItems[existingItemIndex].quantity++;
@@ -197,13 +214,13 @@
                         cartItems.push({ name, price, quantity: 1 });
                     }
 
-                    // Kurangi stok produk
                     product.stock--;
-                    localStorage.setItem('products', JSON.stringify(products)); // Simpan kembali ke localStorage
+                    localStorage.setItem('products', JSON.stringify(products));
+                    console.log('Keranjang:', cartItems);
 
                     updateCartButton();
                 } else {
-                    alert('Produk habis!'); // Beri tahu pengguna bahwa produk habis
+                    alert('Produk habis!');
                 }
             });
         });
